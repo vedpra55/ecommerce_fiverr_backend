@@ -201,7 +201,7 @@ async function getSimilarProducts(req, res) {
 
     let Modal;
     if (brand === "ZARA") Modal = Product;
-    if (brand === "H") Modal = HMProduct;
+    if (brand === "H&M") Modal = HMProduct;
 
     const similarProducts = await Modal.find({
       "productDetails.mainCategories.0": mainCategory,
