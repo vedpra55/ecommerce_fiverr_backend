@@ -155,7 +155,10 @@ async function getProducts(req, res) {
       });
     }
 
-    const total = await Modal.find({}).count();
+    // Default Brand query
+    const total = await Modal.find({
+      productBrand: queryBrand,
+    }).count();
 
     const products = await Modal.find({
       productBrand: queryBrand,
