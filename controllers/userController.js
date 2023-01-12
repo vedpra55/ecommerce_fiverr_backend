@@ -147,8 +147,10 @@ async function updateUserProfile(req, res, next) {
       token: token,
     });
   } catch (err) {
-    console.log(err.message);
-    next(err);
+    console.log(err);
+    res.status(401).json({
+      error: err.message,
+    });
   }
 }
 
