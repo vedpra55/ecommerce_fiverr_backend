@@ -129,10 +129,10 @@ async function updateUserProfile(req, res, next) {
     user.name = name || user.name;
     user.sirName = sirName || user.sirName;
     user.phoneNumber = phoneNumber || user.phoneNumber;
-    user.address.zipCode = address?.zipCode;
-    user.address.state = address?.state;
-    user.address.city = address?.city;
-    user.address.landMark = address?.landMark;
+    user.address.zipCode = address?.zipCode || "";
+    user.address.state = address?.state || "";
+    user.address.city = address?.city || "";
+    user.address.landMark = address?.landMark || "";
 
     await user.save();
 
