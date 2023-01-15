@@ -198,22 +198,37 @@ async function getSingleProduct(req, res) {
 
 async function getSimilarProducts(req, res) {
   try {
+    const brand = req.body.brand || null;
     const mainCategory = req.body.mainCategory || null;
     const category = req.body.category || null;
-    const brand = req.body.brand || null;
+    const subCategory = req.body.subCategory || null;
 
     let Modal;
     if (brand === "ZARA") Modal = Product;
     if (brand === "H&M") Modal = HMProduct;
 
-    const similarProducts = await Modal.find({
-      "productDetails.mainCategories.0": mainCategory,
-      "productDetails.mainCategories.1": category,
-    })
-      .sort({ price: 1 })
-      .limit(4);
+    if (!subCategory) {
+      const similarProducts = await Modal.find({
+        "productDetails.mainCategories.0": mainCategory,
+        "productDetails.mainCategories.1": category,
+      })
+        .sort({ price: 1 })
+        .limit(8);
 
-    res.json({ data: similarProducts });
+      return res.json({ data: similarProducts });
+    }
+
+    if (subCategory) {
+      const similarProducts = await Modal.find({
+        "productDetails.mainCategories.0": mainCategory,
+        "productDetails.mainCategories.1": category,
+        "productDetails.mainCategories.2": subCategory,
+      })
+        .sort({ price: 1 })
+        .limit(8);
+
+      return res.json({ data: similarProducts });
+    }
   } catch (err) {
     console.log(err.message);
     res.status(401).json({ error: err.message });
