@@ -219,7 +219,7 @@ async function getSimilarProducts(req, res) {
         "productDetails.mainCategories.0": mainCategory,
         "productDetails.mainCategories.1": category,
       })
-        .sort({ price: 1 })
+
         .skip(randomNumber)
         .limit(8);
 
@@ -240,7 +240,6 @@ async function getSimilarProducts(req, res) {
         "productDetails.mainCategories.1": category,
         "productDetails.mainCategories.2": subCategory,
       })
-        .sort({ price: 1 })
         .skip(randomNumber)
         .limit(8);
 
