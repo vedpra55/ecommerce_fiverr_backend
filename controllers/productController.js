@@ -208,23 +208,40 @@ async function getSimilarProducts(req, res) {
     if (brand === "H&M") Modal = HMProduct;
 
     if (!subCategory) {
+      const total = await Modal.find({
+        "productDetails.mainCategories.0": mainCategory,
+        "productDetails.mainCategories.1": category,
+      }).count();
+
+      const randomNumber = total * Math.random();
+
       const similarProducts = await Modal.find({
         "productDetails.mainCategories.0": mainCategory,
         "productDetails.mainCategories.1": category,
       })
         .sort({ price: 1 })
+        .skip(randomNumber)
         .limit(8);
 
       return res.json({ data: similarProducts });
     }
 
     if (subCategory) {
+      const total = await Modal.find({
+        "productDetails.mainCategories.0": mainCategory,
+        "productDetails.mainCategories.1": category,
+        "productDetails.mainCategories.2": subCategory,
+      }).count();
+
+      const randomNumber = total * Math.random();
+
       const similarProducts = await Modal.find({
         "productDetails.mainCategories.0": mainCategory,
         "productDetails.mainCategories.1": category,
         "productDetails.mainCategories.2": subCategory,
       })
         .sort({ price: 1 })
+        .skip(randomNumber)
         .limit(8);
 
       return res.json({ data: similarProducts });

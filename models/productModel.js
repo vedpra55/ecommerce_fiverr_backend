@@ -71,6 +71,7 @@ const ProductSchema = mongoose.Schema(
 ProductSchema.index({
   productName: "text",
   productBrand: "text",
+  "productDetails.relativeProducts": "text",
 });
 
 const Product = mongoose.model("zaraproducts", ProductSchema);

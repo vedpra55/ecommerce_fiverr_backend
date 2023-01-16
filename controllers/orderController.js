@@ -62,7 +62,7 @@ async function getUserOrder(req, res) {
 }
 
 async function getQiwiBill(req, res) {
-  const { amount, userId, email } = req.body;
+  const { amount, userId, email, orderId } = req.body;
 
   const QIWI_STYLE_CODE = "Anna-MuP0VwyJIZ";
   const lifetime = qiwiApi.getLifetimeByDay(0.05);
@@ -81,6 +81,15 @@ async function getQiwiBill(req, res) {
   };
 
   const qiwiBill = await qiwiApi.createBill(id, fields);
+
+  await Order.updateOne(
+    {
+      _id: orderId,
+    },
+    {
+      billId: id,
+    }
+  );
 
   res.json({
     url: qiwiBill.payUrl,

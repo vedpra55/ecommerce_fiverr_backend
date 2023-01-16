@@ -74,6 +74,9 @@ const OrderSchema = mongoose.Schema(
     paidAt: { type: Date },
     statusDeliveryAt: { type: Date },
     qiwiBill: { type: Object },
+    billId: {
+      type: String,
+    },
   },
   {
     timestamps: true,
