@@ -6,7 +6,7 @@ const OrderSchema = mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
+      required: false,
       ref: User,
     },
     shippingAddress: {
@@ -35,11 +35,11 @@ const OrderSchema = mongoose.Schema(
 
     totalAmount: {
       type: Number,
-      required: true,
+      required: false,
     },
-    shippingPrice: { type: Number, required: true },
-    discount: { type: Number, required: true },
-    isPaid: { type: Boolean, required: true, default: false },
+    shippingPrice: { type: Number, required: false },
+    discount: { type: Number, required: false },
+    isPaid: { type: Boolean, required: false, default: false },
     products: [
       {
         brand: {
@@ -65,7 +65,7 @@ const OrderSchema = mongoose.Schema(
         },
       },
     ],
-    paymentMethod: { type: String, required: true },
+    paymentMethod: { type: String, required: false },
 
     statusDelivery: {
       type: String,

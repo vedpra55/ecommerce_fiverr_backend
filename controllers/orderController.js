@@ -56,40 +56,49 @@ async function getUserOrder(req, res) {
 
   const orders = await Order.find({ user: uid });
 
+  orders.forEach(async (order) => {
+    if (order.billId) {
+      const billInfo = await qiwiApi.getBillInfo(order?.billId);
+      await order.updateOne({
+        _id: order._id,
+        isPaid: billInfo.status.value === "PAID" ? true : false,
+        qiwiBill: billInfo.status.value === "PAID" ? billInfo : {},
+      });
+    }
+  });
+
+  const newOrders = await Order.find({ user: uid });
+
   res.json({
-    data: orders,
+    data: newOrders,
   });
 }
 
 async function getQiwiBill(req, res) {
-  const { amount, userId, email, orderId } = req.body;
+  const { orderId } = req.body;
+
+  const order = await Order.findOne({ _id: orderId });
 
   const QIWI_STYLE_CODE = "Anna-MuP0VwyJIZ";
-  const lifetime = qiwiApi.getLifetimeByDay(0.05);
-  const id = uuid.v4();
+  const lifetime = qiwiApi.getLifetimeByDay(5);
+  const billId = uuid.v4();
 
   const fields = {
-    amount: amount,
+    amount: 1,
     currency: "RUB",
-    comment: id,
+    comment: billId,
     expirationDateTime: lifetime,
-    email: email,
-    account: userId,
+    email: order.shippingAddress.email,
+    account: order.user,
     customFields: { themeCode: QIWI_STYLE_CODE },
     // successUrl: `http://0.0.0.0:3000/order/${order._id}`
-    successUrl: `https://www.sanctionka.shop/success`,
+    successUrl: `http://localhost:3000/account?tab=1`,
   };
 
-  const qiwiBill = await qiwiApi.createBill(id, fields);
+  const qiwiBill = await qiwiApi.createBill(billId, fields);
 
-  await Order.updateOne(
-    {
-      _id: orderId,
-    },
-    {
-      billId: id,
-    }
-  );
+  order.billId = billId;
+  order.save();
 
   res.json({
     url: qiwiBill.payUrl,
