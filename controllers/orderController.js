@@ -63,6 +63,10 @@ async function getUserOrder(req, res) {
         _id: order._id,
         isPaid: billInfo.status.value === "PAID" ? true : false,
         qiwiBill: billInfo.status.value === "PAID" ? billInfo : {},
+        statusDelivery:
+          billInfo.status.value === "PAID"
+            ? "Prepare for delivery"
+            : "Заказ не оплачен",
       });
     }
   });
@@ -92,7 +96,7 @@ async function getQiwiBill(req, res) {
     account: order.user,
     customFields: { themeCode: QIWI_STYLE_CODE },
     // successUrl: `http://0.0.0.0:3000/order/${order._id}`
-    successUrl: `http://localhost:3000/account?tab=1`,
+    successUrl: `https://sanctionka-new.vercel.app/account?tab=1`,
   };
 
   const qiwiBill = await qiwiApi.createBill(billId, fields);
