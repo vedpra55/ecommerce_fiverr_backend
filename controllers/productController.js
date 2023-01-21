@@ -282,10 +282,25 @@ async function productSearch(req, res) {
   });
 }
 
+async function getProductByColor(req, res) {
+  const { brand, id } = req.body;
+  let Modal;
+
+  if (brand === "ZARA") Modal = Product;
+  if (brand === "H&M") Modal = HMProduct;
+
+  const productId = await Modal.findOne({ id: id }).select("_id");
+
+  res.json({
+    data: productId,
+  });
+}
+
 module.exports = {
   getProducts,
   getSingleProduct,
   getSimilarProducts,
   getBestSellerProducts,
   productSearch,
+  getProductByColor,
 };

@@ -14,6 +14,7 @@ const ProductSchema = mongoose.Schema(
         colorName: {
           type: String,
         },
+        _id: String,
       },
       colors: [
         {
