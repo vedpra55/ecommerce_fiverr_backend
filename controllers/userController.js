@@ -115,7 +115,7 @@ async function verifyLoggedinUser(req, res) {
 
 async function updateUserProfile(req, res, next) {
   try {
-    const { name, sirName, phoneNumber, address, token } = req.body;
+    const { name, password, sirName, phoneNumber, address, token } = req.body;
 
     if (!token) {
       return res.status(401).json({
@@ -125,6 +125,12 @@ async function updateUserProfile(req, res, next) {
 
     const decode = jwt.verify(token, process.env.JWT_SECRET_KEY);
     const user = await User.findOne({ _id: decode._id }).orFail();
+
+    if (password) {
+      const hashedPassword = hashPassword(password);
+      user.password = hashedPassword;
+      await user.save();
+    }
 
     user.name = name || user.name;
     user.sirName = sirName || user.sirName;

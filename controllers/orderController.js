@@ -34,13 +34,24 @@ async function createOrder(req, res) {
     products.map(async (item) => {
       let ProductModal;
       if (item.brand === "H&M") {
-        ProductModal = await HMProduct.findById(item.productId).orFail();
+        ProductModal = await HMProduct.findOne({ _id: item.productId });
+        await HMProduct.updateOne(
+          { _id: item.productId },
+          {
+            totalSales:
+              parseInt(ProductModal.totalSales) + parseInt(item.quantity),
+          }
+        );
       } else if (item.brand === "ZARA") {
-        ProductModal = await Product.findById(item.productId);
+        ProductModal = await Product.findOne({ _id: item.productId });
+        await Product.updateOne(
+          { _id: item.productId },
+          {
+            totalSales:
+              parseInt(ProductModal.totalSales) + parseInt(item.quantity),
+          }
+        );
       }
-      await ProductModal.update({
-        totalSales: ProductModal.totalSales + parseInt(item.quantity),
-      });
     });
 
     res.json({
@@ -48,6 +59,18 @@ async function createOrder(req, res) {
     });
   } catch (err) {
     console.log(err.message + "error");
+  }
+}
+
+async function deleterOrder(req, res) {
+  try {
+    const { orderId } = req.body;
+    await Order.deleteOne({ _id: orderId });
+    res.json({
+      data: "order deleted",
+    });
+  } catch (err) {
+    console.log(err.message);
   }
 }
 
@@ -64,9 +87,10 @@ async function getUserOrder(req, res) {
         isPaid: billInfo.status.value === "PAID" ? true : false,
         qiwiBill: billInfo.status.value === "PAID" ? billInfo : {},
         statusDelivery:
-          billInfo.status.value === "PAID"
+          billInfo.status.value === "PAID" &&
+          order.statusDelivery === "Заказ не оплачен"
             ? "Prepare for delivery"
-            : "Заказ не оплачен",
+            : order.statusDelivery,
       });
     }
   });
@@ -183,6 +207,7 @@ async function editShippingState(req, res) {
 
 module.exports = {
   createOrder,
+  deleterOrder,
   getUserOrder,
   getQiwiBill,
   getAllOrders,
