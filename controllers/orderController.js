@@ -95,7 +95,7 @@ async function getUserOrder(req, res) {
     }
   });
 
-  const newOrders = await Order.find({ user: uid });
+  const newOrders = await Order.find({ user: uid }).sort({ createdAt: -1 });
 
   res.json({
     data: newOrders,
@@ -145,7 +145,7 @@ async function getAllOrders(req, res) {
   }
 
   if (adminUser.isAdmin) {
-    const orders = await Order.find({});
+    const orders = await Order.find({}).sort({ createdAt: -1 });
     return res.json({
       data: orders,
     });
@@ -154,7 +154,6 @@ async function getAllOrders(req, res) {
 
 async function adminOrder(req, res) {
   const uid = req.query.uid;
-
   const adminUser = await User.findOne({ _id: uid });
 
   if (!adminUser.isAdmin) {
@@ -162,6 +161,13 @@ async function adminOrder(req, res) {
       data: "no admin user found",
     });
   }
+
+  const data = await Order.find({
+    day: {
+      $gt: Date("2024-01-01"),
+      $lt: Date("2023-01-01"),
+    },
+  });
 
   if (adminUser.isAdmin) {
     const orders = await Order.find({}).select("_id").select("createdAt");
