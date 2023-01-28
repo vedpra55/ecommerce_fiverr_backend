@@ -205,7 +205,8 @@ async function getAllUser(req, res) {
 
 async function editUserDetailsByAdmin(req, res, next) {
   try {
-    const { userId, name, sirName, phoneNumber, address, adminId } = req.body;
+    const { isAdmin, userId, name, sirName, phoneNumber, address, adminId } =
+      req.body;
 
     console.log(userId, adminId);
 
@@ -226,6 +227,7 @@ async function editUserDetailsByAdmin(req, res, next) {
     user.address.state = address?.state;
     user.address.city = address?.city;
     user.address.landMark = address?.landMark;
+    user.isAdmin = isAdmin;
 
     await user.save();
 
