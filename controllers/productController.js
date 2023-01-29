@@ -169,12 +169,12 @@ async function getProducts(req, res) {
 
     // Default Brand query
     const total = await Modal.find({
-      productBrand: "ZARA",
+      productBrand: queryBrand,
       "productDetails.sizes": { $elemMatch: { sizeAvailable: true } },
     }).count();
 
     const products = await Modal.find({
-      productBrand: "ZARA",
+      productBrand: queryBrand,
       "productDetails.sizes": { $elemMatch: { sizeAvailable: true } },
     })
       .skip(page * bookPerPage)
