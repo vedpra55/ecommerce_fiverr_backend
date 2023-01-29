@@ -28,9 +28,11 @@ async function getProducts(req, res) {
       if (mainCategory.length >= 2) {
         const totalLenght = await Modal.find({
           "productDetails.mainCategories.0": mainCategory,
+          "productDetails.sizes": { $elemMatch: { sizeAvailable: true } },
         }).count();
         const products = await Modal.find({
           "productDetails.mainCategories.0": mainCategory,
+          "productDetails.sizes": { $elemMatch: { sizeAvailable: true } },
         })
           .skip(page * bookPerPage)
           .limit(bookPerPage)
@@ -44,10 +46,12 @@ async function getProducts(req, res) {
       } else {
         const totalLenght = await Modal.find({
           "productDetails.mainCategories.0": mainCategory,
+          "productDetails.sizes": { $elemMatch: { sizeAvailable: true } },
         }).count();
 
         const products = await Modal.find({
           "productDetails.mainCategories.0": mainCategory,
+          "productDetails.sizes": { $elemMatch: { sizeAvailable: true } },
         })
           .skip(page * bookPerPage)
           .limit(bookPerPage)
@@ -65,11 +69,13 @@ async function getProducts(req, res) {
       const totalLenght = await Modal.find({
         "productDetails.mainCategories.0": mainCategory,
         "productDetails.mainCategories.1": category,
+        "productDetails.sizes": { $elemMatch: { sizeAvailable: true } },
       }).count();
 
       const products = await Modal.find({
         "productDetails.mainCategories.0": mainCategory,
         "productDetails.mainCategories.1": category,
+        "productDetails.sizes": { $elemMatch: { sizeAvailable: true } },
       })
         .skip(page * bookPerPage)
         .limit(bookPerPage)
@@ -89,12 +95,14 @@ async function getProducts(req, res) {
           "productDetails.mainCategories.0": mainCategory,
           "productDetails.mainCategories.1": category,
           "productDetails.mainCategories.2": subCategory,
+          "productDetails.sizes": { $elemMatch: { sizeAvailable: true } },
         }).count();
 
         const products = await HMProduct.find({
           "productDetails.mainCategories.0": mainCategory,
           "productDetails.mainCategories.1": category,
           "productDetails.mainCategories.2": subCategory,
+          "productDetails.sizes": { $elemMatch: { sizeAvailable: true } },
         })
           .skip(page * bookPerPage)
           .limit(bookPerPage)
@@ -112,6 +120,7 @@ async function getProducts(req, res) {
           "productDetails.mainCategories.1": category,
           "productDetails.mainCategories.2": subCategory,
           "productDetails.sizes": { $elemMatch: { sizeName: sizes } },
+          "productDetails.sizes": { $elemMatch: { sizeAvailable: true } },
         }).count();
 
         const products = await HMProduct.find({
@@ -119,6 +128,7 @@ async function getProducts(req, res) {
           "productDetails.mainCategories.1": category,
           "productDetails.mainCategories.2": subCategory,
           "productDetails.sizes": { $elemMatch: { sizeName: sizes } },
+          "productDetails.sizes": { $elemMatch: { sizeAvailable: true } },
         })
           .skip(page * bookPerPage)
           .limit(bookPerPage)
@@ -138,12 +148,14 @@ async function getProducts(req, res) {
         "productDetails.mainCategories.0": mainCategory,
         "productDetails.mainCategories.1": category,
         "productDetails.sizes": { $elemMatch: { sizeName: sizes } },
+        "productDetails.sizes": { $elemMatch: { sizeAvailable: true } },
       }).count();
 
       const products = await Modal.find({
         "productDetails.mainCategories.0": mainCategory,
         "productDetails.mainCategories.1": category,
         "productDetails.sizes": { $elemMatch: { sizeName: sizes } },
+        "productDetails.sizes": { $elemMatch: { sizeAvailable: true } },
       })
         .skip(page * bookPerPage)
         .limit(bookPerPage)
@@ -157,11 +169,13 @@ async function getProducts(req, res) {
 
     // Default Brand query
     const total = await Modal.find({
-      productBrand: queryBrand,
+      productBrand: "ZARA",
+      "productDetails.sizes": { $elemMatch: { sizeAvailable: true } },
     }).count();
 
     const products = await Modal.find({
-      productBrand: queryBrand,
+      productBrand: "ZARA",
+      "productDetails.sizes": { $elemMatch: { sizeAvailable: true } },
     })
       .skip(page * bookPerPage)
       .limit(bookPerPage)
@@ -211,6 +225,7 @@ async function getSimilarProducts(req, res) {
       const total = await Modal.find({
         "productDetails.mainCategories.0": mainCategory,
         "productDetails.mainCategories.1": category,
+        "productDetails.sizes": { $elemMatch: { sizeAvailable: true } },
       }).count();
 
       const randomNumber = total * Math.random();
@@ -218,6 +233,7 @@ async function getSimilarProducts(req, res) {
       const similarProducts = await Modal.find({
         "productDetails.mainCategories.0": mainCategory,
         "productDetails.mainCategories.1": category,
+        "productDetails.sizes": { $elemMatch: { sizeAvailable: true } },
       })
 
         .skip(randomNumber)
@@ -231,6 +247,7 @@ async function getSimilarProducts(req, res) {
         "productDetails.mainCategories.0": mainCategory,
         "productDetails.mainCategories.1": category,
         "productDetails.mainCategories.2": subCategory,
+        "productDetails.sizes": { $elemMatch: { sizeAvailable: true } },
       }).count();
 
       const randomNumber = total * Math.random();
@@ -239,6 +256,7 @@ async function getSimilarProducts(req, res) {
         "productDetails.mainCategories.0": mainCategory,
         "productDetails.mainCategories.1": category,
         "productDetails.mainCategories.2": subCategory,
+        "productDetails.sizes": { $elemMatch: { sizeAvailable: true } },
       })
         .skip(randomNumber)
         .limit(8);
@@ -261,7 +279,11 @@ async function getBestSellerProducts(req, res) {
     Modal = HMProduct;
   }
 
-  const products = await Modal.find({}).sort({ totalSales: -1 }).limit(4);
+  const products = await Modal.find({
+    "productDetails.sizes": { $elemMatch: { sizeAvailable: true } },
+  })
+    .sort({ totalSales: -1 })
+    .limit(4);
 
   res.json({
     data: products,
@@ -271,7 +293,10 @@ async function getBestSellerProducts(req, res) {
 async function productSearch(req, res) {
   const searchText = req.body.search;
 
-  const result = await Product.find({ $text: { $search: searchText } })
+  const result = await Product.find({
+    $text: { $search: searchText },
+    "productDetails.sizes": { $elemMatch: { sizeAvailable: true } },
+  })
     .select("_id")
     .select("productName")
     .select("productBrand")
