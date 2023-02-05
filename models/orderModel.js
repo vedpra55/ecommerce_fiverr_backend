@@ -57,7 +57,7 @@ const OrderSchema = mongoose.Schema(
         selectedSize: {
           type: String,
         },
-        totalAmount: {
+        price: {
           type: Number,
         },
         quantity: {

@@ -208,8 +208,6 @@ async function editUserDetailsByAdmin(req, res, next) {
     const { isAdmin, userId, name, sirName, phoneNumber, address, adminId } =
       req.body;
 
-    console.log(userId, adminId);
-
     const adminUser = await User.findOne({ _id: adminId });
 
     if (!adminUser.isAdmin) {
@@ -240,6 +238,27 @@ async function editUserDetailsByAdmin(req, res, next) {
   }
 }
 
+async function checkUserOldPassword(req, res) {
+  try {
+    const { password, uid } = req.body;
+    const user = await User.findById(uid).orFail();
+    if (!user)
+      return res.json({
+        data: false,
+      });
+    const isCorrectPassword = comparePassword(password, user?.password);
+
+    res.json({
+      data: isCorrectPassword,
+    });
+  } catch (err) {
+    console.log(err.message);
+    return res.json({
+      error: err.messages,
+    });
+  }
+}
+
 module.exports = {
   registerUser,
   loginUser,
@@ -248,4 +267,5 @@ module.exports = {
   getUserProfile,
   getAllUser,
   editUserDetailsByAdmin,
+  checkUserOldPassword,
 };

@@ -7,6 +7,7 @@ const {
   getUserProfile,
   verifyLoggedinUser,
   getAllUser,
+  checkUserOldPassword,
   editUserDetailsByAdmin,
 } = require("../controllers/userController");
 
@@ -19,5 +20,6 @@ router.put("/updateProfile", updateUserProfile);
 router.get("/profile/:id", getUserProfile);
 router.get("/allUsers", getAllUser);
 router.put("/adminEditUser", editUserDetailsByAdmin);
+router.post("/checkOldPassword", checkUserOldPassword);
 
 module.exports = router;
