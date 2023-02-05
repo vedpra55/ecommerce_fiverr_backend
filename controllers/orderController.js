@@ -145,7 +145,7 @@ async function getAllOrders(req, res) {
   }
 
   if (adminUser.isAdmin) {
-    const orders = await Order.find({}).sort({ updatedAt: -1 });
+    const orders = await Order.find({});
     return res.json({
       data: orders,
     });
