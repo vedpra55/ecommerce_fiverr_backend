@@ -120,7 +120,7 @@ async function getQiwiBill(req, res) {
     account: order.user,
     customFields: { themeCode: QIWI_STYLE_CODE },
     // successUrl: `http://0.0.0.0:3000/order/${order._id}`
-    successUrl: `https://sanctionka-new.vercel.app/account?tab=1`,
+     successUrl: `https://xn--80aaxhbpchw7c.xn--80asehdb/`,
   };
 
   const qiwiBill = await qiwiApi.createBill(billId, fields);
